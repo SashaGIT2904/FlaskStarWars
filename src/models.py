@@ -18,10 +18,10 @@ class User(db.Model):
 class Characters(db.Model):
     _tablename__ = 'characters'
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(80), unique=True, nullable=True)
+    name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     height: Mapped[int] = mapped_column(Integer)
     weight: Mapped[int] = mapped_column(Integer)
-    favorites_by: Mapped[list['FavoritesCharacters']] = relationship(back_populates='people')
+    favorites_by: Mapped[list['FavoritesCharacters']] = relationship(back_populates='character')
 
 
 class FavoritesCharacters(db.Model):
@@ -31,3 +31,5 @@ class FavoritesCharacters(db.Model):
     users: Mapped['User'] = relationship(back_populates='favorites')
     character_id: Mapped[int] = mapped_column(ForeignKey('characters.id'))
     character: Mapped['Characters'] = relationship(back_populates='favorites_by')
+
+    #entonces las siguientes tablas podrian ser: class FavoritosPlanets(db.Model)  y la siguientes class Planets y y claro ya con sus debidas relaciones
