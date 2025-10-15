@@ -19,6 +19,8 @@ class User(db.Model):
                       ] = relationship(back_populates='user')
     favorites_planets: Mapped[list['FavoritesPlanets']
                               ] = relationship(back_populates='user')
+    favorites_starships: Mapped[list['FavoritesStarships']
+                                ] = relationship(back_populates='user')
 
 
 class Characters(db.Model):
@@ -29,6 +31,7 @@ class Characters(db.Model):
     weight: Mapped[int] = mapped_column(Integer)
     favorites_by: Mapped[list['FavoritesCharacters']
                          ] = relationship(back_populates='character')
+    
 
 
 class FavoritesCharacters(db.Model):
@@ -39,8 +42,6 @@ class FavoritesCharacters(db.Model):
     character_id: Mapped[int] = mapped_column(ForeignKey('characters.id'))
     character: Mapped['Characters'] = relationship(
         back_populates='favorites_by')
-
-    # entonces las siguientes tablas podrian ser: class FavoritosPlanets(db.Model)  y la siguientes class Planets y y claro ya con sus debidas relaciones
 
 
 class Planets(db.Model):
@@ -60,4 +61,20 @@ class FavoritesPlanets(db.Model):
     users: Mapped['User'] = relationship(back_populates='favorites')
     planet_id: Mapped[int] = mapped_column(ForeignKey('planets.id'))
     planet: Mapped['Planets'] = relationship(
+        back_populates='favorites_by')
+    
+class Starships(db.Model):
+    __tablename__ = 'starships'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
+    favorites_by: Mapped[list['FavoritesStarships']
+                         ] = relationship(back_populates='starship')
+
+class FavoritesStarships(db.Model):
+    __tablename__ = 'favorites_starships'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey('user.id'))
+    users: Mapped['User'] = relationship(back_populates='favorites')
+    starship_id: Mapped[int] = mapped_column(ForeignKey('starships.id'))
+    starship: Mapped['Starships'] = relationship(
         back_populates='favorites_by')
